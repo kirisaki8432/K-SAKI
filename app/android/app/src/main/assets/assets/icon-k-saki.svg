@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="K-SAKI">
+  <!-- Ikon aplikasi K-SAKI: kotak membulat gelap, K + petir putih -->
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="#0E0E0E"/>
+  <g fill="#FAFAFA">
+    <!-- Huruf K tebal -->
+    <path d="M104 96 H164 V238 L296 96 H360 L244 256 L384 416 H316 L164 288 V416 H104 Z"/>
+    <!-- Petir di samping K -->
+    <path d="M436 108 L392 216 h26 L398 320 L468 196 h-28 L470 108 Z"/>
+  </g>
+</svg>
