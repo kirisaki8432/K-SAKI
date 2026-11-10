@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>K-SAKI — Guide Game</title>
+<link rel="icon" type="image/png" href="assets/icon-192.png">
+<style>
+@font-face{font-family:'Outfit';src:url(assets/outfit.woff2) format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+:root{
+  --page:#060606; --card:#0E0E0E; --card2:#141414; --text:#FAFAFA; --muted:#8F8F8F;
+  --border:rgba(255,255,255,.10); --accent:#3B82F6; --accent-soft:rgba(59,130,246,.14);
+  --chip:#1A1A1A; --shadow:0 2px 12px rgba(0,0,0,.35); --radius:12px;
+}
+body.day{
+  --page:#F4F4F5; --card:#FFFFFF; --card2:#F8F8F8; --text:#0A0A0A; --muted:#636363;
+  --border:rgba(0,0,0,.10); --accent:#2563EB; --accent-soft:rgba(37,99,235,.10);
+  --chip:#EFEFEF; --shadow:0 2px 10px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Outfit',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--page);color:var(--text);min-height:100vh;line-height:1.55;font-size:15px}
+a{color:var(--accent);text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+img{display:block;max-width:100%}
+.wrap{max-width:860px;margin:0 auto;padding:0 14px 40px}
+
+/* Header */
+header{position:sticky;top:0;z-index:20;background:var(--page);border-bottom:1px solid var(--border)}
+.head-in{max-width:860px;margin:0 auto;padding:10px 14px;display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.brand .mark{width:34px;height:34px;flex:none;border-radius:9px;overflow:hidden}
+.brand .mark img{width:100%;height:100%;object-fit:cover}
+.brand b{font-size:17px;letter-spacing:.04em;white-space:nowrap}
+.brand small{display:block;font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iconbtn{flex:none;width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:17px;display:flex;align-items:center;justify-content:center}
+.iconbtn:active{transform:scale(.96)}
+
+/* Hero */
+.hero{padding:22px 0 8px;text-align:center}
+.hero .logo-big{width:150px;margin:0 auto 10px;color:var(--text)}
+.hero .logo-big img{width:100%}
+body.night .hero .logo-big img{filter:invert(1)}
+.hero h1{font-size:26px;letter-spacing:.05em}
+.hero p.tag{color:var(--muted);font-size:14px;margin-top:4px}
+.hero .badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:var(--chip);color:var(--muted);border:1px solid var(--border)}
+.pill.blue{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.offline-note{margin-top:14px;font-size:12.5px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;text-align:left}
+.offline-note b{color:var(--text)}
+
+/* Search */
+.search{margin:16px 0 6px;position:relative}
+.search input{width:100%;padding:12px 14px 12px 52px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:15px;outline:none}
+.search input:focus{border-color:var(--accent)}
+.search span{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--muted)}
+.search input::placeholder{color:var(--muted)}
+
+/* Game cards */
+.games{display:grid;grid-template-columns:1fr;gap:12px;margin-top:10px}
+@media(min-width:640px){.games{grid-template-columns:1fr 1fr}}
+.gcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}
+.gcard .glogo{height:64px;display:flex;align-items:center;justify-content:center;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 14px}
+.gcard .glogo img{max-height:44px;max-width:100%;object-fit:contain}
+body.night .glogo img.wuwa{filter:brightness(0) invert(1)}
+body.day .glogo img.wuwa{filter:brightness(.55)}
+body.night .glogo img.nikke{filter:invert(1)}
+.gcard h2{font-size:18px}
+.gcard p{color:var(--muted);font-size:13.5px;flex:1}
+.gcard .meta{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-block;text-align:center;border:0;border-radius:10px;padding:11px 14px;font-size:14px;font-weight:700;background:var(--accent);color:#fff;width:100%}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+
+/* Guide pages */
+.crumb{display:flex;align-items:center;gap:8px;margin:16px 0 4px;font-size:13.5px;color:var(--muted)}
+.crumb button{border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:9px;padding:7px 12px;font-size:13px;font-weight:600}
+.ghead{margin:8px 0 4px}
+.ghead .glogo-big{height:76px;display:flex;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:12px}
+.ghead .glogo-big img{max-height:52px;max-width:100%;object-fit:contain}
+body.night .glogo-big img.wuwa{filter:brightness(0) invert(1)}
+body.day .glogo-big img.wuwa{filter:brightness(.55)}
+body.night .glogo-big img.nikke{filter:invert(1)}
+.ghead h1{font-size:22px}
+.ghead .sub{color:var(--muted);font-size:14px;margin-top:2px}
+.ghead .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.notice{margin:12px 0;background:var(--accent-soft);border:1px solid var(--accent);border-radius:var(--radius);padding:10px 12px;font-size:13.5px;color:var(--text)}
+.notice b{color:var(--accent)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:20px;padding:7px 13px;font-size:13px;font-weight:600;white-space:nowrap}
+.tab.sel{background:var(--accent);color:#fff;border-color:transparent}
+section.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-top:12px;box-shadow:var(--shadow)}
+section.card h2{font-size:17px;margin-bottom:8px}
+section.card h3{font-size:15px;margin:14px 0 6px}
+section.card p{font-size:14px;color:var(--text)}
+section.card p.mut{color:var(--muted)}
+section.card ul,section.card ol{padding-left:20px;font-size:14px}
+section.card li{margin-bottom:6px}
+section.card li b{font-weight:700}
+.kv{display:grid;grid-template-columns:1fr;gap:8px;margin-top:8px}
+@media(min-width:640px){.kv{grid-template-columns:1fr 1fr}}
+.kv .item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.kv .item b{display:block;font-size:14px}
+.kv .item span{font-size:13px;color:var(--muted)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.chip{border:1px solid var(--border);background:var(--chip);color:var(--text);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:600}
+.chip.sel{background:var(--accent);color:#fff;border-color:transparent}
+.filter{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-family:inherit;font-size:14px;outline:none;margin:4px 0 10px}
+.filter:focus{border-color:var(--accent)}
+.res-list{display:grid;grid-template-columns:1fr;gap:8px}
+@media(min-width:640px){.res-list{grid-template-columns:1fr 1fr}}
+.res{display:flex;gap:10px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;align-items:flex-start}
+.avatar{flex:none;width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff}
+.res b{font-size:14.5px}
+.res .rmeta{font-size:12px;color:var(--muted);margin:1px 0 3px}
+.res .rdesc{font-size:13px;color:var(--text)}
+.star{color:#F2C94C}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--border);vertical-align:top}
+th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+.tier{font-weight:800;padding:2px 8px;border-radius:6px;font-size:12px;color:#fff;display:inline-block}
+.tier-SS{background:#E5484D}.tier-S{background:#F76B15}.tier-A{background:#F2C94C;color:#222}.tier-B{background:#46A758}.tier-C{background:#8F8F8F}
+.tier-Splus{background:#E5484D}.tier-Aplus{background:#F2C94C;color:#222}
+.faq details{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.faq summary{font-weight:700;font-size:14px;cursor:pointer}
+.faq p{margin-top:6px;font-size:13.5px}
+footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted);line-height:1.6}
+footer b{color:var(--text)}
+.empty{padding:18px;text-align:center;color:var(--muted);font-size:14px}
+.hidden{display:none!important}
+</style>
+</head>
+<body class="night">
+<header>
+  <div class="head-in">
+    <a class="brand" href="#/">
+      <span class="mark"><img src="assets/icon-192.png" alt="K-SAKI"></span>
+      <span><b>K-SAKI</b><small>Knowledge Sharing Alliance for Knowing Info</small></span>
+    </a>
+    <button class="iconbtn" id="themeBtn" title="Ganti tema" aria-label="Ganti tema">☀️</button>
+  </div>
+</header>
+
+<div class="wrap" id="app"><!-- dirender JS --></div>
+
+<script src="data.js"></script>
+<script>
+(function(){
+"use strict";
+var D = window.KSAKI_DATA;
+var root = document.getElementById('app');
+var themeBtn = document.getElementById('themeBtn');
+
+/* ---------- Tema ---------- */
+function getTheme(){ try{ return localStorage.getItem('ksaki_theme') || 'night'; }catch(e){ return 'night'; } }
+function applyTheme(t){
+  document.body.classList.toggle('day', t==='day');
+  document.body.classList.toggle('night', t!=='day');
+  themeBtn.textContent = t==='day' ? '🌙' : '☀️';
+  try{ localStorage.setItem('ksaki_theme', t); }catch(e){}
+}
+applyTheme(getTheme());
+themeBtn.addEventListener('click', function(){ applyTheme(document.body.classList.contains('day') ? 'night' : 'day'); });
+
+/* ---------- Util ---------- */
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function stars(n){ var s=''; for(var i=0;i<n;i++) s+='★'; return '<span class="star">'+s+'</span>'; }
+var ELEM_COLOR = {};
+D.wuwa.elements.forEach(function(e){ ELEM_COLOR[e.name]=e.color; });
+D.nikke.elements.forEach(function(e){ ELEM_COLOR[e.name]=e.color; });
+function avatar(name, elem){
+  var c = ELEM_COLOR[elem] || '#3B82F6';
+  var init = name.replace(/[^A-Za-z ]/g,'').split(' ').map(function(w){ return w.charAt(0); }).join('').slice(0,2).toUpperCase();
+  return '<span class="avatar" style="background:'+c+'">'+esc(init)+'</span>';
+}
+
+/* ---------- Beranda ---------- */
+function homeHTML(q){
+  q = (q||'').toLowerCase();
+  var games = D.games.filter(function(g){
+    return !q || g.name.toLowerCase().indexOf(q)>=0 || g.desc.toLowerCase().indexOf(q)>=0;
+  });
+  var cards = games.map(function(g){
+    return '<article class="gcard">'
+      + '<div class="glogo"><img class="'+(g.id==='wuwa'?'wuwa':'nikke')+'" src="'+g.logo+'" alt="'+esc(g.logoAlt)+'"></div>'
+      + '<h2>'+esc(g.name)+'</h2>'
+      + '<p>'+esc(g.desc)+'</p>'
+      + '<div class="meta"><span class="pill blue">'+g.guides+' panduan</span><span class="pill">'+esc(g.tag)+'</span></div>'
+      + '<a class="btn" href="#/'+g.id+'">Buka Guide →</a>'
+      + '</article>';
+  }).join('');
+  if(!cards) cards = '<div class="empty">Tidak ada game yang cocok dengan “'+esc(q)+'”.</div>';
+  return ''
+    + '<div class="hero">'
+    + '<div class="logo-big"><img src="assets/logo-k-saki.svg" alt="Logo K-SAKI"></div>'
+    + '<h1>K-SAKI</h1>'
+    + '<p class="tag">Knowledge Sharing Alliance for Knowing Info — panduan game, cepat dan ringkas.</p>'
+    + '<div class="badges"><span class="pill blue">100% Offline</span><span class="pill">2 Game</span><span class="pill">Bahasa Indonesia</span></div>'
+    + '<div class="offline-note"><b>📶 Tanpa internet, tetap jalan.</b> Semua data guide tersimpan di dalam aplikasi. Update info (event, guide baru) hanya lewat update APK ke versi terbaru.</div>'
+    + '</div>'
+    + '<div class="search"><span>🔍</span><input id="homeSearch" type="search" placeholder="Cari game… (mis. Wuthering, NIKKE)" value="'+esc(q||'')+'" aria-label="Cari game"></div>'
+    + '<div class="games">'+cards+'</div>'
+    + '<footer><b>K-SAKI v'+D.version+'</b> · Data diperbarui '+esc(D.updated)+'<br>'
+    + 'Logo game adalah milik pemegang merek masing-masing (Kuro Games, Shift Up). Panduan ini dibuat penggemar dan bukan situs resmi.<br>'
+    + 'Konten Wuthering Waves mengacu panduan pengguna; Tier List mengacu GameWith (6 November 2026).</footer>';
+}
+
+/* ---------- Guide Wuthering Waves ---------- */
+var wuwaTab = 'pemula';
+var wuwaElem = 'Semua';
+var wuwaQ = '';
+var wuwaTier = 'Semua';
+
+function wuwaHTML(){
+  var w = D.wuwa;
+  var tabs = [['pemula','Pemula'],['resonator','Resonator'],['tier','Tier List'],['senjata','Senjata'],['echo','Echo'],['tim','Tim'],['endgame','Endgame'],['faq','FAQ']];
+  var tabBtns = tabs.map(function(t){
+    return '<button class="tab'+(wuwaTab===t[0]?' sel':'')+'" data-tab="'+t[0]+'">'+t[1]+'</button>';
+  }).join('');
+  var body = '';
+  if(wuwaTab==='pemula'){
+    body = '<section class="card"><h2>7 Langkah Pemula</h2><ol>'
+      + w.steps.map(function(s){ return '<li><b>'+esc(s.t)+'.</b> '+esc(s.d)+'</li>'; }).join('')
+      + '</ol></section>'
+      + '<section class="card"><h2>Tentang Game</h2><p>'+esc(w.about)+'</p><div class="meta" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">'
+      + w.meta.map(function(m){ return '<span class="pill">'+esc(m)+'</span>'; }).join('') + '</div></section>'
+      + '<section class="card"><h2>6 Elemen</h2><p class="mut">Wuthering Waves tidak punya reaksi elemen seperti game lain — tiap elemen punya set Echo-nya sendiri.</p><div class="kv">'
+      + w.elements.map(function(e){ return '<div class="item"><b><span style="color:'+e.color+'">●</span> '+esc(e.name)+'</b><span>Set Echo: '+esc(e.set)+'<br>'+esc(e.chars)+'</span></div>'; }).join('')
+      + '</div></section>';
+  }
+  if(wuwaTab==='resonator'){
+    var elems = ['Semua'].concat(w.elements.map(function(e){ return e.name; }));
+    var chips = elems.map(function(e){
+      return '<button class="chip'+(wuwaElem===e?' sel':'')+'" data-elem="'+esc(e)+'">'+esc(e)+'</button>';
+    }).join('');
+    var list = w.chars.filter(function(c){
+      var okE = wuwaElem==='Semua' || c.elem===wuwaElem;
+      var q = wuwaQ.toLowerCase();
+      var okQ = !q || c.name.toLowerCase().indexOf(q)>=0 || c.weapon.toLowerCase().indexOf(q)>=0 || c.role.toLowerCase().indexOf(q)>=0;
+      return okE && okQ;
+    });
+    body = '<section class="card"><h2>Resonator Unggulan ('+list.length+' dari '+w.chars.length+')</h2>'
+      + '<input class="filter" id="resQ" type="search" placeholder="Cari nama, senjata, atau role…" value="'+esc(wuwaQ)+'" aria-label="Cari Resonator">'
+      + '<div class="chips">'+chips+'</div>'
+      + (list.length ? '<div class="res-list">' + list.map(function(c){
+          return '<div class="res">'+avatar(c.name, c.elem)+'<div><b>'+esc(c.name)+' '+stars(c.star)+'</b>'
+            + '<div class="rmeta">'+esc(c.elem)+' · '+esc(c.weapon)+' · '+esc(c.role)+'</div>'
+            + '<div class="rdesc">'+esc(c.desc)+'</div></div></div>';
+        }).join('') + '</div>' : '<div class="empty">Tidak ada Resonator yang cocok.</div>')
+      + '</section>';
+  }
+  if(wuwaTab==='tier'){
+    var tiers = ['Semua','SS','S+','S','A+','A','B','C'];
+    var chips = tiers.map(function(t){
+      return '<button class="chip'+(wuwaTier===t?' sel':'')+'" data-tier="'+t+'">'+t+'</button>';
+    }).join('');
+    var list = w.tiers.filter(function(x){ return wuwaTier==='Semua' || x.tier===wuwaTier; });
+    var cls = function(t){ return t.replace('+','plus'); };
+    body = '<section class="card"><h2>Tier List — 58 Resonator</h2>'
+      + '<p class="mut">'+esc(w.tierNote)+'</p>'
+      + '<div class="chips">'+chips+'</div>'
+      + '<table><tr><th>Resonator</th><th>Tier</th></tr>'
+      + list.map(function(x){ return '<tr><td>'+esc(x.name)+'</td><td><span class="tier tier-'+cls(x.tier)+'">'+x.tier+'</span></td></tr>'; }).join('')
+      + '</table></section>'
+      + '<section class="card"><h2>Top 10 per Peran</h2>'
+      + Object.keys(w.topRoles).map(function(role){
+          return '<h3>'+esc(role)+'</h3><ol>' + w.topRoles[role].map(function(n,i){ return '<li>'+(i+1)+'. '+esc(n)+'</li>'; }).join('') + '</ol>';
+        }).join('')
+      + '</section>';
+  }
+  if(wuwaTab==='senjata'){
+    body = '<section class="card"><h2>5 Tipe Senjata</h2><div class="kv">'
+      + w.weapons.map(function(x){ return '<div class="item"><b>'+esc(x.type)+'</b><span>'+esc(x.chars)+'<br>Contoh: '+esc(x.example)+'</span></div>'; }).join('')
+      + '</div></section>'
+      + '<section class="card"><h2>Senjata Signature 5★</h2><table><tr><th>Senjata</th><th>Pemilik</th></tr>'
+      + w.signatures.map(function(s){ return '<tr><td>'+esc(s.name)+'</td><td>'+esc(s.owner)+'</td></tr>'; }).join('')
+      + '</table><p class="mut" style="margin-top:10px">'+esc(w.weaponAlt)+'</p></section>';
+  }
+  if(wuwaTab==='echo'){
+    body = '<section class="card"><h2>Sistem Echo</h2><p>'+esc(w.echo.cost)+'</p>'
+      + w.echo.slots.map(function(s){ return '<h3>'+esc(s.cost)+'</h3><p>'+esc(s.desc)+'</p>'; }).join('')
+      + '<h3>Set Sonata</h3><p>'+esc(w.echo.sonata)+'</p>'
+      + '<h3>Target Stat DPS</h3><p>'+esc(w.echo.target)+'</p></section>';
+  }
+  if(wuwaTab==='tim'){
+    body = '<section class="card"><h2>Contoh Tim</h2><p class="mut">'+esc(w.teamFormula)+'</p>'
+      + w.teams.map(function(t){
+          return '<h3>'+esc(t.name)+'</h3><p><b>'+t.members.map(esc).join(' + ')+'</b></p><p class="mut">'+esc(t.note)+'</p>';
+        }).join('')
+      + '</section>';
+  }
+  if(wuwaTab==='endgame'){
+    body = '<section class="card"><h2>Kombat &amp; Endgame</h2>'
+      + w.combat.map(function(c){ return '<h3>'+esc(c.t)+'</h3><p>'+esc(c.d)+'</p>'; }).join('')
+      + '<h3>Rutinitas Harian</h3><p>'+esc(w.daily)+'</p></section>';
+  }
+  if(wuwaTab==='faq'){
+    body = '<section class="card faq"><h2>FAQ Gacha &amp; Pemula</h2>'
+      + w.faq.map(function(f){ return '<details><summary>'+esc(f.q)+'</summary><p>'+esc(f.a)+'</p></details>'; }).join('')
+      + '</section>';
+  }
+  return ''
+    + '<div class="crumb"><button id="backBtn">← Beranda</button><span>Wuthering Waves</span></div>'
+    + '<div class="ghead"><div class="glogo-big"><img class="wuwa" src="assets/wuwa-logo.png" alt="Logo Wuthering Waves"></div>'
+    + '<h1>'+esc(w.title)+'</h1><p class="sub">'+esc(w.subtitle)+' — '+esc(w.hero)+'</p>'
+    + '<div class="meta">'+w.meta.map(function(m){ return '<span class="pill">'+esc(m)+'</span>'; }).join('')+'</div></div>'
+    + '<div class="tabs">'+tabBtns+'</div>'
+    + body
+    + '<footer>'+esc(w.source)+'</footer>';
+}
+
+/* ---------- Guide NIKKE ---------- */
+function nikkeHTML(){
+  var n = D.nikke;
+  return ''
+    + '<div class="crumb"><button id="backBtn">← Beranda</button><span>NIKKE: Goddess of Victory</span></div>'
+    + '<div class="ghead"><div class="glogo-big"><img class="nikke" src="assets/nikke-logo.png" alt="Logo NIKKE Goddess of Victory"></div>'
+    + '<h1>'+esc(n.title)+'</h1><p class="sub">'+esc(n.subtitle)+' — '+esc(n.hero)+'</p>'
+    + '<div class="meta">'+n.meta.map(function(m){ return '<span class="pill">'+esc(m)+'</span>'; }).join('')+'</div></div>'
+    + '<div class="notice"><b>Panduan awal.</b> Konten NIKKE masih tahap awal dan akan dilengkapi di update aplikasi berikutnya.</div>'
+    + '<section class="card"><h2>Tentang Game</h2><p>'+esc(n.about)+'</p></section>'
+    + '<section class="card"><h2>Role NIKKE</h2><div class="kv">'
+    + n.roles.map(function(r){ return '<div class="item"><b>'+esc(r.name)+'</b><span>'+esc(r.desc)+'</span></div>'; }).join('')
+    + '</div></section>'
+    + '<section class="card"><h2>Burst Skill — I / II / III</h2>'
+    + n.bursts.map(function(b){ return '<h3>'+esc(b.name)+'</h3><p>'+esc(b.desc)+'</p>'; }).join('')
+    + '<p class="mut" style="margin-top:8px">'+esc(n.burstNote)+'</p></section>'
+    + '<section class="card"><h2>5 Elemen</h2><div class="chips">'
+    + n.elements.map(function(e){ return '<span class="pill"><span style="color:'+e.color+'">●</span> '+esc(e.name)+'</span>'; }).join('')
+    + '</div><p class="mut">'+esc(n.elementNote)+'</p></section>'
+    + '<section class="card"><h2>6 Jenis Senjata</h2><div class="kv">'
+    + n.weapons.map(function(x){ return '<div class="item"><b>'+esc(x.type)+'</b><span>'+esc(x.desc)+'</span></div>'; }).join('')
+    + '</div></section>'
+    + '<section class="card"><h2>Rarity</h2><div class="kv">'
+    + n.rarity.map(function(r){ return '<div class="item"><b>'+esc(r.name)+'</b><span>'+esc(r.desc)+'</span></div>'; }).join('')
+    + '</div></section>'
+    + '<section class="card"><h2>Membangun Tim</h2><p>'+esc(n.team)+'</p></section>'
+    + '<section class="card"><h2>5 Tips Awal</h2><ol>'
+    + n.tips.map(function(t){ return '<li><b>'+esc(t.t)+'.</b> '+esc(t.d)+'</li>'; }).join('')
+    + '</ol></section>'
+    + '<section class="card"><h2>Rutinitas Harian</h2><p>'+esc(n.daily)+'</p></section>'
+    + '<section class="card faq"><h2>FAQ</h2>'
+    + n.faq.map(function(f){ return '<details><summary>'+esc(f.q)+'</summary><p>'+esc(f.a)+'</p></details>'; }).join('')
+    + '</section>'
+    + '<footer>'+esc(n.source)+'</footer>';
+}
+
+/* ---------- Router ---------- */
+function render(){
+  var h = location.hash || '#/';
+  var q = '';
+  if(h === '#/' || h === '' || h === '#'){
+    root.innerHTML = homeHTML('');
+    var inp = document.getElementById('homeSearch');
+    inp.addEventListener('input', function(){ renderHomeSearch(inp.value); });
+    inp.focus();
+  } else if(h === '#/wuwa'){
+    root.innerHTML = wuwaHTML();
+    bindWuwa();
+  } else if(h === '#/nikke'){
+    root.innerHTML = nikkeHTML();
+    document.getElementById('backBtn').addEventListener('click', function(){ location.hash = '#/'; });
+  } else {
+    location.hash = '#/';
+  }
+  window.scrollTo(0,0);
+}
+function renderHomeSearch(q){
+  var val = q;
+  var games = D.games.filter(function(g){
+    var l = val.toLowerCase();
+    return !l || g.name.toLowerCase().indexOf(l)>=0 || g.desc.toLowerCase().indexOf(l)>=0;
+  });
+  var cards = games.map(function(g){
+    return '<article class="gcard">'
+      + '<div class="glogo"><img class="'+(g.id==='wuwa'?'wuwa':'nikke')+'" src="'+g.logo+'" alt="'+esc(g.logoAlt)+'"></div>'
+      + '<h2>'+esc(g.name)+'</h2><p>'+esc(g.desc)+'</p>'
+      + '<div class="meta"><span class="pill blue">'+g.guides+' panduan</span><span class="pill">'+esc(g.tag)+'</span></div>'
+      + '<a class="btn" href="#/'+g.id+'">Buka Guide →</a></article>';
+  }).join('');
+  var list = root.querySelector('.games');
+  if(list) list.innerHTML = cards || '<div class="empty">Tidak ada game yang cocok dengan “'+esc(val)+'”.</div>';
+}
+function bindWuwa(){
+  document.getElementById('backBtn').addEventListener('click', function(){ location.hash = '#/'; });
+  root.querySelectorAll('[data-tab]').forEach(function(b){
+    b.addEventListener('click', function(){ wuwaTab = b.getAttribute('data-tab'); render(); });
+  });
+  var rq = document.getElementById('resQ');
+  if(rq){
+    rq.addEventListener('input', function(){ wuwaQ = rq.value; refreshResList(); });
+    root.querySelectorAll('[data-elem]').forEach(function(b){
+      b.addEventListener('click', function(){ wuwaElem = b.getAttribute('data-elem'); render(); });
+    });
+  }
+  root.querySelectorAll('[data-tier]').forEach(function(b){
+    b.addEventListener('click', function(){ wuwaTier = b.getAttribute('data-tier'); render(); });
+  });
+}
+function refreshResList(){
+  var w = D.wuwa;
+  var list = w.chars.filter(function(c){
+    var okE = wuwaElem==='Semua' || c.elem===wuwaElem;
+    var q = wuwaQ.toLowerCase();
+    var okQ = !q || c.name.toLowerCase().indexOf(q)>=0 || c.weapon.toLowerCase().indexOf(q)>=0 || c.role.toLowerCase().indexOf(q)>=0;
+    return okE && okQ;
+  });
+  var box = root.querySelector('.res-list');
+  var head = root.querySelector('section.card h2');
+  if(head) head.textContent = 'Resonator Unggulan ('+list.length+' dari '+w.chars.length+')';
+  if(box){
+    box.innerHTML = list.length ? list.map(function(c){
+      return '<div class="res">'+avatar(c.name, c.elem)+'<div><b>'+esc(c.name)+' '+stars(c.star)+'</b>'
+        + '<div class="rmeta">'+esc(c.elem)+' · '+esc(c.weapon)+' · '+esc(c.role)+'</div>'
+        + '<div class="rdesc">'+esc(c.desc)+'</div></div></div>';
+    }).join('') : '<div class="empty">Tidak ada Resonator yang cocok.</div>';
+  }
+}
+window.addEventListener('hashchange', render);
+render();
+})();
+</script>
+</body>
+</html>
