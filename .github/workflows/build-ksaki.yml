@@ -1,0 +1,41 @@
+name: Build K-SAKI APK
+
+# Build APK debug K-SAKI (WebView offline).
+# Signing RILIS nanti pakai keystore BARU — JANGAN pakai keystore KISA.
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build debug APK
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: "8.7"
+          build-root-directory: app/android
+          arguments: assembleDebug
+
+      - name: Rename APK (K-SAKI-debug.apk)
+        run: mv app/android/app/build/outputs/apk/debug/app-debug.apk app/android/app/build/outputs/apk/debug/K-SAKI-debug.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: K-SAKI-apk-debug
+          path: app/android/app/build/outputs/apk/debug/K-SAKI-debug.apk
